@@ -1,0 +1,51 @@
+{% extends 'notes/base.html' %}
+
+{% block title %}Home | Notes App{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <h1 class="text-primary fw-bold">Welcome to Your Notes 📒</h1>
+    <p class="lead">Create and manage your personal notes securely.</p>
+
+    <!-- Add Note Form -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h4 class="card-title">Add New Note</h4>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-success mt-2">Add Note</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Display Notes -->
+    {% if notes %}
+        <div class="row">
+            {% for note in notes %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ note.title }}</h5>
+                            <p class="card-text">{{ note.content }}</p>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between align-items-center">
+                            <small class="text-muted">Created: {{ note.created_at|date:"M d, Y H:i" }}</small>
+                            <div>
+                                <a href="{% url 'edit_note' note.pk %}" class="btn btn-sm btn-outline-primary me-2">Edit</a>
+                                <a href="{% url 'delete_note' note.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            No notes found. Add some using the form above!
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}
