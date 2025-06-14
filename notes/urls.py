@@ -5,5 +5,5 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('edit/<int:pk>/', views.edit_note, name='edit_note'),
     path('delete/<int:pk>/', views.delete_note, name='delete_note'),
-
+    path('pin/<int:pk>/', views.toggle_pin, name='toggle_pin'),
 ]

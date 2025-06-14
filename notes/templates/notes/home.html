@@ -3,12 +3,19 @@
 {% block title %}Home | Notes App{% endblock %}
 
 {% block content %}
-
 <div class="container mt-4">
     <h1 class="text-primary fw-bold">Welcome to Your Notes 📒</h1>
     <p class="lead">Create and manage your personal notes securely.</p>
 
-    <!-- Add Note Form -->
+    <!-- 🔍 Search Bar -->
+    <form method="GET" action="" class="mb-4">
+        <div class="input-group">
+            <input type="text" name="q" class="form-control" placeholder="Search notes..." value="{{ request.GET.q }}">
+            <button type="submit" class="btn btn-outline-secondary">Search</button>
+        </div>
+    </form>
+
+    <!-- 📝 Add Note Form -->
     <div class="card mb-4">
         <div class="card-body">
             <h4 class="card-title">Add New Note</h4>
@@ -20,20 +27,33 @@
         </div>
     </div>
 
-    <!-- Display Notes -->
+    <!-- 📋 Display Notes -->
     {% if notes %}
         <div class="row">
             {% for note in notes %}
                 <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card h-100 shadow-sm">
+                    <div class="card h-100 shadow-sm {% if note.is_pinned %}border-warning{% endif %}">
                         <div class="card-body">
-                            <h5 class="card-title">{{ note.title }}</h5>
+                            <h5 class="card-title">
+                                {{ note.title }}
+                                {% if note.is_pinned %}
+                                    <span class="badge bg-warning text-dark">📌 Pinned</span>
+                                {% endif %}
+                            </h5>
                             <p class="card-text">{{ note.content }}</p>
                         </div>
                         <div class="card-footer d-flex justify-content-between align-items-center">
                             <small class="text-muted">Created: {{ note.created_at|date:"M d, Y H:i" }}</small>
-                            <div>
-                                <a href="{% url 'edit_note' note.pk %}" class="btn btn-sm btn-outline-primary me-2">Edit</a>
+                            <div class="d-flex gap-1">
+                                <!-- 📌 Pin/Unpin Button -->
+                                <form method="POST" action="{% url 'toggle_pin' note.pk %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-outline-warning">
+                                        {% if note.is_pinned %}Unpin{% else %}Pin{% endif %}
+                                    </button>
+                                </form>
+
+                                <a href="{% url 'edit_note' note.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
                                 <a href="{% url 'delete_note' note.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
                             </div>
                         </div>
@@ -47,5 +67,4 @@
         </div>
     {% endif %}
 </div>
-
 {% endblock %}
