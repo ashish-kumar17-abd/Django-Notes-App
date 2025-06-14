@@ -17,18 +17,22 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     {% if user.is_authenticated %}
+                    <li class="nav-item d-flex align-items-center me-2">
+                        <img src="{{ user.profile.image.url }}" alt="Profile" width="32" height="32"
+                            class="rounded-circle me-2 border border-light" style="object-fit: cover;">
+                        <span class="navbar-text text-white">Hi, {{ user.username }}</span>
+                    </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Hi, {{ user.username }}</a>
+                        <a class="nav-link" href="{% url 'profile-update' %}">Edit Profile</a>
                     </li>
                     <li class="nav-item">
                         <form action="{% url 'logout' %}" method="post" style="display: inline;">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-link"
+                            <button type="submit" class="btn btn-link nav-link"
                                 style="padding: 0; margin: 0; border: none; background: none;">
                                 Logout
                             </button>
                         </form>
-
                     </li>
                     {% else %}
                     <li class="nav-item">
