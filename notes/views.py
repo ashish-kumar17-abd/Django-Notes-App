@@ -62,3 +62,30 @@ def toggle_pin(request, pk):
     note.is_pinned = not note.is_pinned
     note.save()
     return redirect('home')
+
+
+
+from django.core.mail import send_mail
+from django.conf import settings
+
+def contact_view(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        message = request.POST.get('message')
+
+        full_message = f"From: {name}\nEmail: {email}\n\nMessage:\n{message}"
+
+        send_mail(
+            subject='Contact Form Message',
+            message=full_message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=['youremail@example.com'],  # Replace with your real email
+        )
+        return render(request, 'notes/contact_success.html')
+
+    return render(request, 'notes/contact.html')
+
+
+def about(request):
+    return render(request, 'notes/about.html')
